@@ -1,9 +1,10 @@
 from typing import Dict, List, Optional
 from fastapi import WebSocket
-from .models import Session, SessionSnapshot, User, Participant, ParticipantRole, ParticipantStatus, SessionPhase, SessionSettings, Vote, JobRole
+from .models import Session, SessionSnapshot, User, Participant, ParticipantRole, ParticipantStatus, SessionPhase, SessionSettings, Vote, JobRole, WorkItem, VoteValue
 from datetime import datetime
 import asyncio
 import random
+import uuid
 
 class ConnectionManager:
     def __init__(self):
@@ -53,6 +54,55 @@ class ConnectionManager:
             del session.votes[user_id]
         
         await self.broadcast_snapshot(session_id)
+
+    async def add_work_item(self, session_id: str, title: str, description: Optional[str] = None):
+        session = self.sessions.get(session_id)
+        if not session:
+            return
+
+        new_item = WorkItem(
+            id=str(uuid.uuid4()),
+            title=title,
+            description=description,
+            agreedEstimate=None
+        )
+        session.workItems.append(new_item)
+        
+        # If no active item, make this one active
+        if not session.activeWorkItemId:
+            session.activeWorkItemId = new_item.id
+
+        await self.broadcast_snapshot(session_id)
+
+    async def set_active_work_item(self, session_id: str, work_item_id: str):
+        session = self.sessions.get(session_id)
+        if not session:
+            return
+
+        # Verify item exists
+        item = next((i for i in session.workItems if i.id == work_item_id), None)
+        if not item:
+            return
+
+        session.activeWorkItemId = work_item_id
+        
+        # Reset votes for the new round
+        session.votes = {}
+        session.phase = SessionPhase.VOTING
+        for p in session.participants:
+            p.hasVoted = False
+            
+        await self.broadcast_snapshot(session_id)
+
+    async def set_agreed_estimate(self, session_id: str, work_item_id: str, estimate: VoteValue):
+        session = self.sessions.get(session_id)
+        if not session:
+            return
+            
+        item = next((i for i in session.workItems if i.id == work_item_id), None)
+        if item:
+            item.agreedEstimate = estimate
+            await self.broadcast_snapshot(session_id)
 
     async def broadcast_snapshot(self, session_id: str):
         session = self.sessions.get(session_id)

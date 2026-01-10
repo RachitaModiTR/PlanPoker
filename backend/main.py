@@ -59,6 +59,12 @@ async def handle_event(session_id: str, user_id: str, event: str, payload: dict)
     if not session:
         return
 
+    # Check moderator permission helper
+    is_moderator = False
+    requester = next((p for p in session.participants if p.id == user_id), None)
+    if requester and requester.role == "moderator":
+        is_moderator = True
+
     # --- Event Handlers ---
 
     if event == "cast_vote":
@@ -79,21 +85,36 @@ async def handle_event(session_id: str, user_id: str, event: str, payload: dict)
         await manager.broadcast_snapshot(session_id)
 
     elif event == "reveal_votes":
-        session.phase = SessionPhase.REVEALING
-        await manager.broadcast_snapshot(session_id)
+        if is_moderator:
+            session.phase = SessionPhase.REVEALING
+            await manager.broadcast_snapshot(session_id)
 
     elif event == "clear_votes":
-        session.votes = {}
-        session.phase = SessionPhase.VOTING
-        for p in session.participants:
-            p.hasVoted = False
-        await manager.broadcast_snapshot(session_id)
+        if is_moderator:
+            session.votes = {}
+            session.phase = SessionPhase.VOTING
+            for p in session.participants:
+                p.hasVoted = False
+            await manager.broadcast_snapshot(session_id)
     
     elif event == "kick_participant":
-        target_id = payload.get("userId")
-        requester = next((p for p in session.participants if p.id == user_id), None)
-        if requester and requester.role == "moderator" and target_id:
-            await manager.kick_participant(session_id, target_id)
+        if is_moderator:
+            target_id = payload.get("userId")
+            if target_id:
+                await manager.kick_participant(session_id, target_id)
+                
+    elif event == "add_work_item":
+        if is_moderator:
+            title = payload.get("title")
+            description = payload.get("description")
+            if title:
+                await manager.add_work_item(session_id, title, description)
+                
+    elif event == "set_active_work_item":
+        if is_moderator:
+            work_item_id = payload.get("workItemId")
+            if work_item_id:
+                await manager.set_active_work_item(session_id, work_item_id)
         
     elif event == "join_session":
         pass
