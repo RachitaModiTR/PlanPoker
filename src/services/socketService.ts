@@ -2,8 +2,29 @@ import { User } from '../types/domain';
 import { useSessionStore } from '../store/sessionStore';
 import { SessionSnapshot } from '../types/domain';
 
-// Use specific network IP so other devices can connect
-const WS_BASE_URL = 'ws://192.168.1.16:8000/ws';
+// Determine WebSocket URL from environment or fallback to localhost
+const getWebSocketUrl = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  console.log('[SocketService] VITE_API_URL:', apiUrl);
+
+  if (apiUrl) {
+    if (apiUrl.startsWith('http')) {
+      // https://backend.com -> wss://backend.com/ws
+      return apiUrl.replace(/^http/, 'ws') + '/ws';
+    } 
+    if (apiUrl.startsWith('ws')) {
+      // Already ws/wss
+      return apiUrl + '/ws';
+    }
+    // Assume it's just the host (render property: host) -> wss://host/ws
+    return `wss://${apiUrl}/ws`;
+  }
+  
+  // Default fallback for local dev if not specified
+  return 'ws://192.168.1.16:8000/ws';
+};
+
+const WS_BASE_URL = getWebSocketUrl();
 
 /**
  * Real WebSocket service implementation.
