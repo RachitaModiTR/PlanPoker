@@ -3,8 +3,6 @@ import {
   Session, 
   SessionSnapshot, 
   Participant, 
-  Vote, 
-  SessionPhase,
   User,
   VoteValue
 } from '../types/domain';
@@ -28,7 +26,7 @@ const initialSession: Session = {
   phase: 'voting',
   votes: {},
   settings: {
-    cardDeck: CONFIG.DEFAULT_DECK as string[],
+    cardDeck: [...CONFIG.DEFAULT_DECK],
     autoReveal: false,
   }
 };
@@ -42,7 +40,7 @@ const BOTS = [
 class MockSocketService {
   private isConnected = false;
   private currentSession: Session = JSON.parse(JSON.stringify(initialSession));
-  private botTimeouts: NodeJS.Timeout[] = [];
+  private botTimeouts: ReturnType<typeof setTimeout>[] = [];
 
   connect(sessionId: string, user: User) {
     if (this.isConnected) return;
@@ -154,7 +152,6 @@ class MockSocketService {
         if (!this.isConnected || this.currentSession.phase !== 'voting') return;
 
         // Pick a vote value. Bias towards 3, 5, 8.
-        const deck = this.currentSession.settings.cardDeck;
         // Simple logic: pick from standard fibonacci subset
         const commonVotes = [3, 5, 8, 5, 5, 8]; 
         // 10% chance of random outlier

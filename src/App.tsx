@@ -1,4 +1,3 @@
-import React from 'react';
 import { GlobalStateProvider } from './context/GlobalStateProvider';
 import { SessionPage } from './pages/SessionPage';
 

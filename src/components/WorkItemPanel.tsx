@@ -11,7 +11,8 @@ export const WorkItemPanel: React.FC = () => {
     : null;
 
   // Check permissions (mock logic '|| true' again for testing)
-  const isModerator = currentUser?.id === session.moderatorId || currentUser?.role === 'moderator' || true;
+  const myParticipant = session.participants.find(p => p.id === currentUser?.id);
+  const isModerator = currentUser?.id === session.moderatorId || myParticipant?.role === 'moderator' || true;
 
   if (!activeWorkItem) {
     return (

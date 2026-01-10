@@ -8,7 +8,8 @@ export const ParticipantsPanel: React.FC = () => {
   const participants = session?.participants || [];
 
   // Check if current user is moderator
-  const isModerator = currentUser?.id === session?.moderatorId || currentUser?.role === 'moderator' || true; 
+  const myParticipant = participants.find(p => p.id === currentUser?.id);
+  const isModerator = currentUser?.id === session?.moderatorId || myParticipant?.role === 'moderator' || true; 
   // '|| true' kept for consistent testing behavior in this session, remove for strict prod
 
   // Sort participants

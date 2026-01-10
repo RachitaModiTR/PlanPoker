@@ -31,7 +31,7 @@ export const useSessionStore = create<SessionState>()(
       session: null,
       isConnected: false,
 
-      joinSession: (user, sessionId) => {
+      joinSession: (user, _sessionId) => {
         // In a real app, this would trigger a WebSocket connection or API call
         // For now, we just update the local user state and mock a session if none exists
         set({ 

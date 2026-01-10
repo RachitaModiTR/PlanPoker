@@ -11,13 +11,11 @@ const WS_BASE_URL = 'ws://192.168.1.16:8000/ws';
  */
 class SocketService {
   private socket: WebSocket | null = null;
-  private isExplicitDisconnect = false;
 
   connect(sessionId: string, user: User) {
     if (this.socket) {
       this.socket.close();
     }
-    this.isExplicitDisconnect = false;
 
     // Construct URL with query params for auth/user info
     const params = new URLSearchParams({
@@ -53,7 +51,7 @@ class SocketService {
       useSessionStore.getState().setConnected(false);
       this.socket = null;
       
-      // Auto-reconnect logic could go here if !this.isExplicitDisconnect
+      // Auto-reconnect logic could go here
     };
 
     this.socket.onerror = (error) => {
@@ -62,7 +60,6 @@ class SocketService {
   }
 
   disconnect() {
-    this.isExplicitDisconnect = true;
     if (this.socket) {
       this.socket.close();
       this.socket = null;

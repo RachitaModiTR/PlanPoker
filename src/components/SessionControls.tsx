@@ -7,7 +7,8 @@ export const SessionControls: React.FC = () => {
 
   if (!session || !currentUser) return null;
 
-  const isModerator = currentUser.id === session.moderatorId || currentUser.role === 'moderator' || true; 
+  const myParticipant = session.participants.find(p => p.id === currentUser.id);
+  const isModerator = currentUser.id === session.moderatorId || myParticipant?.role === 'moderator' || true; 
   // Note: '|| true' is temporary to allow testing as any user since we mock user ID. 
   // In real app, remove '|| true'.
   
