@@ -118,7 +118,8 @@ class MockSocketService {
         ...user,
         role: this.currentSession.participants.length === 0 ? 'moderator' : 'voter',
         status: 'connected',
-        hasVoted: false
+        hasVoted: false,
+        jobRole: user.jobRole || 'Developer'
       };
       this.currentSession.participants.push(participant);
     } else {
@@ -135,7 +136,8 @@ class MockSocketService {
           ...botUser,
           role: 'voter',
           status: 'connected',
-          hasVoted: false
+          hasVoted: false,
+          jobRole: 'Developer'
         });
       }
     });

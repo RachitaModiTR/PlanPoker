@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSessionStore } from '../store/sessionStore';
-import { Participant, JobRole } from '../types/domain';
+import { Participant } from '../types/domain';
 import { socketService } from '../services/socketService';
 
 export const ParticipantsPanel: React.FC = () => {
