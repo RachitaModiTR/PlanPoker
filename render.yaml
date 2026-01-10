@@ -3,7 +3,8 @@ services:
   - type: web
     name: plan-poker-backend
     env: python
-    buildCommand: pip install -r backend/requirements.txt
+    # Ensure we use the same python for install and run
+    buildCommand: python -m pip install --upgrade pip && python -m pip install -r backend/requirements.txt
     startCommand: python -m uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: PORT
