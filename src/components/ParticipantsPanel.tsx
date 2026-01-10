@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSessionStore } from '../store/sessionStore';
-import { Participant } from '../types/domain';
+import { Participant, JobRole } from '../types/domain';
 import { socketService } from '../services/socketService';
 
 export const ParticipantsPanel: React.FC = () => {
@@ -10,14 +10,6 @@ export const ParticipantsPanel: React.FC = () => {
   // Check if current user is moderator
   const myParticipant = participants.find(p => p.id === currentUser?.id);
   const isModerator = currentUser?.id === session?.moderatorId || myParticipant?.role === 'moderator' || true; 
-  // '|| true' kept for consistent testing behavior in this session, remove for strict prod
-
-  // Sort participants
-  const sortedParticipants = [...participants].sort((a, b) => {
-    if (a.role === 'moderator' && b.role !== 'moderator') return -1;
-    if (a.role !== 'moderator' && b.role === 'moderator') return 1;
-    return a.name.localeCompare(b.name);
-  });
 
   const handleKick = (userId: string) => {
     if (window.confirm('Are you sure you want to remove this participant?')) {
@@ -29,21 +21,81 @@ export const ParticipantsPanel: React.FC = () => {
     return <div className="text-gray-500 italic text-sm p-4">Waiting for session...</div>;
   }
 
+  // Filter and sort by group
+  const developers = participants
+    .filter(p => p.jobRole === 'Developer')
+    .sort((a, b) => a.name.localeCompare(b.name));
+    
+  const qas = participants
+    .filter(p => p.jobRole === 'QA')
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const others = participants
+    .filter(p => p.jobRole !== 'Developer' && p.jobRole !== 'QA')
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   return (
-    <div className="space-y-2">
-      {sortedParticipants.length === 0 ? (
+    <div className="space-y-6">
+      <ParticipantGroup 
+        title="Developers" 
+        participants={developers} 
+        isModerator={isModerator} 
+        currentUserId={currentUser?.id} 
+        onKick={handleKick} 
+      />
+      
+      <ParticipantGroup 
+        title="QA" 
+        participants={qas} 
+        isModerator={isModerator} 
+        currentUserId={currentUser?.id} 
+        onKick={handleKick} 
+      />
+
+      {others.length > 0 && (
+        <ParticipantGroup 
+          title="Others" 
+          participants={others} 
+          isModerator={isModerator} 
+          currentUserId={currentUser?.id} 
+          onKick={handleKick} 
+        />
+      )}
+
+      {participants.length === 0 && (
         <p className="text-gray-500 italic text-sm">No participants yet.</p>
-      ) : (
-        sortedParticipants.map((participant) => (
+      )}
+    </div>
+  );
+};
+
+interface ParticipantGroupProps {
+  title: string;
+  participants: Participant[];
+  isModerator: boolean;
+  currentUserId?: string;
+  onKick: (userId: string) => void;
+}
+
+const ParticipantGroup: React.FC<ParticipantGroupProps> = ({ title, participants, isModerator, currentUserId, onKick }) => {
+  if (participants.length === 0) return null;
+
+  return (
+    <div>
+      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
+        {title} ({participants.length})
+      </h3>
+      <div className="space-y-2">
+        {participants.map(participant => (
           <ParticipantItem 
             key={participant.id} 
             participant={participant} 
             isModerator={isModerator}
-            currentUserId={currentUser?.id}
-            onKick={handleKick}
+            currentUserId={currentUserId}
+            onKick={onKick}
           />
-        ))
-      )}
+        ))}
+      </div>
     </div>
   );
 };
@@ -56,13 +108,11 @@ interface ParticipantItemProps {
 }
 
 const ParticipantItem: React.FC<ParticipantItemProps> = ({ participant, isModerator, currentUserId, onKick }) => {
-  // Can kick if: I am moderator AND target is not me
   const canKick = isModerator && participant.id !== currentUserId;
 
   return (
     <div className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg border border-gray-600/50 group hover:bg-gray-700 transition-colors">
       <div className="flex items-center gap-3">
-        {/* Avatar Placeholder */}
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
           {participant.name.slice(0, 2)}
         </div>

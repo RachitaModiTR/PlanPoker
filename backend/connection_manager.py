@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 from fastapi import WebSocket
-from .models import Session, SessionSnapshot, User, Participant, ParticipantRole, ParticipantStatus, SessionPhase, SessionSettings, Vote
+from .models import Session, SessionSnapshot, User, Participant, ParticipantRole, ParticipantStatus, SessionPhase, SessionSettings, Vote, JobRole
 from datetime import datetime
 import asyncio
 import random
@@ -112,6 +112,7 @@ class ConnectionManager:
             existing.status = ParticipantStatus.CONNECTED
             existing.name = user.name
             existing.avatarUrl = user.avatarUrl
+            existing.jobRole = user.jobRole or JobRole.DEVELOPER # Update role if changed
         else:
             # First participant becomes Moderator
             role = ParticipantRole.MODERATOR if len(session.participants) == 0 else ParticipantRole.VOTER
@@ -120,7 +121,8 @@ class ConnectionManager:
                 **user.model_dump(),
                 role=role,
                 status=ParticipantStatus.CONNECTED,
-                hasVoted=False
+                hasVoted=False,
+                jobRole=user.jobRole or JobRole.DEVELOPER
             )
             session.participants.append(new_participant)
 

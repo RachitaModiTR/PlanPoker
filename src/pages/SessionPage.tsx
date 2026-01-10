@@ -8,7 +8,7 @@ import { ResultsPanel } from '../components/ResultsPanel';
 import { JoinScreen } from '../components/JoinScreen';
 import { useSessionStore } from '../store/sessionStore';
 import { useSocket } from '../hooks/useSocket';
-import { VoteValue } from '../types/domain';
+import { VoteValue, JobRole } from '../types/domain';
 
 // Hardcoded for demo purposes; normally from URL params
 const DEMO_SESSION_ID = 'demo-123';
@@ -29,12 +29,13 @@ export const SessionPage: React.FC = () => {
     }
   }, [joinSession]);
 
-  const handleJoin = (name: string) => {
+  const handleJoin = (name: string, jobRole: JobRole) => {
     const randomId = Math.floor(Math.random() * 10000);
     const newUser = { 
       id: `user-${randomId}`, 
       name: name, 
-      avatarUrl: '' 
+      avatarUrl: '',
+      jobRole: jobRole
     };
     
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));

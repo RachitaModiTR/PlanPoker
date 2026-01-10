@@ -1,7 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
 from fastapi.middleware.cors import CORSMiddleware
 from .connection_manager import manager
-from .models import User, ClientEvent, Vote, SessionPhase
+from .models import User, ClientEvent, Vote, SessionPhase, JobRole
 from datetime import datetime
 import json
 
@@ -22,9 +22,16 @@ async def websocket_endpoint(
     session_id: str,
     userId: str = Query(...),
     name: str = Query(...),
-    avatarUrl: str = Query(None)
+    avatarUrl: str = Query(None),
+    jobRole: str = Query("Developer") # Default if missing
 ):
-    user = User(id=userId, name=name, avatarUrl=avatarUrl)
+    # Normalize job role string to Enum
+    try:
+        role_enum = JobRole(jobRole)
+    except ValueError:
+        role_enum = JobRole.DEVELOPER
+
+    user = User(id=userId, name=name, avatarUrl=avatarUrl, jobRole=role_enum)
     
     await manager.connect(websocket, session_id, user)
     
@@ -84,13 +91,11 @@ async def handle_event(session_id: str, user_id: str, event: str, payload: dict)
     
     elif event == "kick_participant":
         target_id = payload.get("userId")
-        # Simple Auth Check: Only allow if requester is moderator
         requester = next((p for p in session.participants if p.id == user_id), None)
         if requester and requester.role == "moderator" and target_id:
             await manager.kick_participant(session_id, target_id)
         
     elif event == "join_session":
-        # Can be used to update user details if payload has them
         pass
 
 if __name__ == "__main__":

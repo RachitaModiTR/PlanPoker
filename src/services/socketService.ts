@@ -42,6 +42,7 @@ class SocketService {
     const params = new URLSearchParams({
       userId: user.id,
       name: user.name,
+      jobRole: user.jobRole || 'Developer'
     });
     if (user.avatarUrl) {
       params.append('avatarUrl', user.avatarUrl);

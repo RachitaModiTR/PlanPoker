@@ -10,6 +10,10 @@ class ParticipantRole(str, Enum):
     VOTER = "voter"
     OBSERVER = "observer"
 
+class JobRole(str, Enum):
+    DEVELOPER = "Developer"
+    QA = "QA"
+
 class ParticipantStatus(str, Enum):
     CONNECTED = "connected"
     DISCONNECTED = "disconnected"
@@ -22,7 +26,6 @@ class SessionPhase(str, Enum):
     RESULTS = "results"
 
 # VoteValue can be a number (points) or special strings ("?", "coffee")
-# Pydantic handles Union types. We'll use strict types where possible.
 VoteValue = Union[float, int, str, None]
 
 # --- Entities ---
@@ -31,11 +34,13 @@ class User(BaseModel):
     id: str
     name: str
     avatarUrl: Optional[str] = None
+    jobRole: Optional[JobRole] = JobRole.DEVELOPER # Default to Dev
 
 class Participant(User):
     role: ParticipantRole
     status: ParticipantStatus
     hasVoted: bool
+    jobRole: JobRole # Explicitly required for participant context
 
 class Vote(BaseModel):
     userId: str
@@ -70,10 +75,7 @@ class SessionSnapshot(BaseModel):
     sequenceId: int
 
 # --- WebSocket Events ---
-# Models for incoming messages from client
 
 class ClientEvent(BaseModel):
     event: str
     payload: Dict[str, Any]
-
-

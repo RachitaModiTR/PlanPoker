@@ -6,9 +6,14 @@
 // --- Enums ---
 
 /**
- * Role of a participant in the session.
+ * Role of a participant in the session (Permissions).
  */
 export type ParticipantRole = 'moderator' | 'voter' | 'observer';
+
+/**
+ * Job Role of the participant (Developer or QA).
+ */
+export type JobRole = 'Developer' | 'QA';
 
 /**
  * Status of a participant's connection or activity.
@@ -38,6 +43,8 @@ export interface User {
   name: string;
   /** Optional URL to an avatar image. */
   avatarUrl?: string;
+  /** Job Role (Dev/QA) */
+  jobRole?: JobRole;
 }
 
 /**
@@ -54,6 +61,8 @@ export interface Participant extends User {
    * Useful for showing 'voted' status without revealing the value.
    */
   hasVoted: boolean;
+  /** Enforced Job Role in this session context (if updated) */
+  jobRole: JobRole; 
 }
 
 /**
@@ -127,4 +136,3 @@ export interface SessionSnapshot {
   /** Sequence number to handle out-of-order updates if necessary. */
   sequenceId: number;
 }
-
