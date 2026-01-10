@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import { User } from '../types/domain';
 import { useSessionStore } from '../store/sessionStore';
 import { SessionSnapshot } from '../types/domain';

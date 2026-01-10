@@ -2,18 +2,22 @@ import React from 'react';
 import { ParticipantRole } from '../types/domain';
 
 interface HeaderProps {
-  sessionCode?: string;
+  userName?: string;
   userRole?: ParticipantRole;
+  sessionCode?: string; // Kept as optional if we want to show it elsewhere or smaller
 }
 
-export const Header: React.FC<HeaderProps> = ({ sessionCode, userRole }) => {
+export const Header: React.FC<HeaderProps> = ({ userName, userRole }) => {
   return (
     <header className="h-16 px-6 bg-gray-800 shadow-md border-b border-gray-700 flex items-center justify-between z-10 w-full">
       <div className="flex items-center gap-4">
         <h1 className="text-xl font-bold text-blue-400 tracking-tight">Planning Poker</h1>
-        {sessionCode && (
-          <span className="bg-gray-700 px-3 py-1 rounded-full text-sm font-mono text-gray-300 border border-gray-600">
-            Session: <span className="text-white font-bold">{sessionCode}</span>
+        {userName && (
+          <span className="bg-gray-700 px-3 py-1 rounded-full text-sm font-medium text-gray-300 border border-gray-600 flex items-center gap-2">
+            <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span className="text-white">{userName}</span>
           </span>
         )}
       </div>
@@ -42,4 +46,3 @@ export const Header: React.FC<HeaderProps> = ({ sessionCode, userRole }) => {
     </header>
   );
 };
-

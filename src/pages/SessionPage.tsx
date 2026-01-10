@@ -81,6 +81,7 @@ export const SessionPage: React.FC = () => {
     <AppLayout 
       sessionCode={session.id} 
       userRole={myRole}
+      userName={currentUser?.name}
       sidebar={<ParticipantsPanel />}
     >
       <div className="space-y-6">
