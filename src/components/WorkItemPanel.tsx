@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useSessionStore } from '../store/sessionStore';
 import { socketService } from '../services/socketService';
-import { WorkItem } from '../types/domain';
+import { WorkItem, VoteValue } from '../types/domain';
 
 export const WorkItemPanel: React.FC = () => {
   const { session, currentUser } = useSessionStore();
   const [isAdding, setIsAdding] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [estimateInput, setEstimateInput] = useState<string>('');
 
   if (!session) return null;
 
@@ -18,6 +19,10 @@ export const WorkItemPanel: React.FC = () => {
   // Check permissions
   const myParticipant = session.participants.find(p => p.id === currentUser?.id);
   const isModerator = currentUser?.id === session.moderatorId || myParticipant?.role === 'moderator';
+
+  // Group items
+  const completedItems = session.workItems.filter(wi => wi.agreedEstimate !== null && wi.agreedEstimate !== undefined);
+  const pendingItems = session.workItems.filter(wi => wi.agreedEstimate === null || wi.agreedEstimate === undefined);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,10 +45,28 @@ export const WorkItemPanel: React.FC = () => {
     }
   };
 
+  const handleFinalizeEstimate = () => {
+    if (!activeWorkItem) return;
+    const value = estimateInput.trim();
+    if (!value) return;
+
+    // Determine if numeric or string
+    const num = parseFloat(value);
+    const finalEstimate: VoteValue = isNaN(num) ? value : num;
+
+    socketService.send('set_agreed_estimate', {
+      workItemId: activeWorkItem.id,
+      estimate: finalEstimate
+    });
+    setEstimateInput('');
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
-      {/* List Sidebar */}
-      <div className="lg:col-span-1 bg-gray-800 rounded-lg border border-gray-700 flex flex-col max-h-[400px]">
+      {/* Sidebar with Tabs/Sections */}
+      <div className="lg:col-span-1 bg-gray-800 rounded-lg border border-gray-700 flex flex-col max-h-[500px]">
+        
+        {/* Header & Add Button */}
         <div className="p-3 border-b border-gray-700 flex justify-between items-center bg-gray-900/50 rounded-t-lg">
           <h3 className="font-semibold text-gray-300 text-sm uppercase tracking-wide">Work Items</h3>
           {isModerator && (
@@ -82,20 +105,48 @@ export const WorkItemPanel: React.FC = () => {
           </form>
         )}
 
-        <div className="overflow-y-auto flex-grow p-2 space-y-2">
-          {session.workItems.length === 0 ? (
-            <p className="text-gray-500 text-xs text-center italic py-4">No items yet.</p>
-          ) : (
-            session.workItems.map(item => (
-              <WorkItemListItem 
-                key={item.id}
-                item={item}
-                isActive={item.id === session.activeWorkItemId}
-                isModerator={isModerator}
-                onSelect={handleSelectActive}
-              />
-            ))
-          )}
+        <div className="overflow-y-auto flex-grow p-2 space-y-4">
+          
+          {/* Pending List */}
+          <div>
+            <div className="px-1 mb-1 text-xs font-bold text-gray-500 uppercase">Pending ({pendingItems.length})</div>
+            <div className="space-y-1">
+              {pendingItems.length === 0 ? (
+                <p className="text-gray-600 text-[10px] italic px-2">No pending items.</p>
+              ) : (
+                pendingItems.map(item => (
+                  <WorkItemListItem 
+                    key={item.id}
+                    item={item}
+                    isActive={item.id === session.activeWorkItemId}
+                    isModerator={isModerator}
+                    onSelect={handleSelectActive}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+
+          {/* Completed List */}
+          <div>
+            <div className="px-1 mb-1 text-xs font-bold text-gray-500 uppercase">Completed ({completedItems.length})</div>
+            <div className="space-y-1">
+              {completedItems.length === 0 ? (
+                <p className="text-gray-600 text-[10px] italic px-2">No completed items.</p>
+              ) : (
+                completedItems.map(item => (
+                  <WorkItemListItem 
+                    key={item.id}
+                    item={item}
+                    isActive={item.id === session.activeWorkItemId}
+                    isModerator={isModerator}
+                    onSelect={handleSelectActive}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -104,7 +155,7 @@ export const WorkItemPanel: React.FC = () => {
         {!activeWorkItem ? (
           <div className="text-center text-gray-500">
             <p className="mb-2">No active work item selected.</p>
-            {isModerator && <p className="text-sm">Add an item from the sidebar to start.</p>}
+            {isModerator && <p className="text-sm">Select or add an item from the sidebar.</p>}
           </div>
         ) : (
           <div>
@@ -139,14 +190,58 @@ export const WorkItemPanel: React.FC = () => {
               </a>
             )}
 
-            {activeWorkItem.agreedEstimate && (
-               <div className="mt-6 pt-4 border-t border-gray-700 flex items-center gap-2">
-                 <span className="text-sm text-gray-400 uppercase tracking-wide font-semibold">Final Estimate:</span>
-                 <span className="px-3 py-1 bg-green-900/40 text-green-300 rounded border border-green-800 font-bold text-lg">
-                   {activeWorkItem.agreedEstimate}
-                 </span>
-               </div>
-            )}
+            {/* Agreed Estimate Display or Input */}
+            <div className="mt-6 pt-4 border-t border-gray-700">
+              {activeWorkItem.agreedEstimate !== null && activeWorkItem.agreedEstimate !== undefined ? (
+                 <div className="flex items-center gap-4">
+                   <div className="flex items-center gap-2">
+                     <span className="text-sm text-gray-400 uppercase tracking-wide font-semibold">Final Estimate:</span>
+                     <span className="px-3 py-1 bg-green-900/40 text-green-300 rounded border border-green-800 font-bold text-lg">
+                       {activeWorkItem.agreedEstimate}
+                     </span>
+                   </div>
+                   {isModerator && (
+                     <button 
+                       onClick={() => {
+                         // Reset estimate logic if needed, currently overwrite via input below
+                       }}
+                       className="text-gray-500 hover:text-gray-300 text-xs underline"
+                     >
+                       Edit
+                     </button>
+                   )}
+                 </div>
+              ) : (
+                <div className="flex items-center gap-2 text-yellow-500/80 text-sm font-medium">
+                   <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                   Voting in progress...
+                </div>
+              )}
+
+              {/* Moderator Finalize Controls */}
+              {isModerator && (
+                <div className="mt-4 flex items-end gap-2 bg-gray-900/30 p-3 rounded border border-gray-700/50 w-full md:w-auto inline-flex">
+                   <div>
+                     <label className="block text-xs text-gray-500 uppercase font-bold mb-1">Set Final Estimate</label>
+                     <input 
+                       type="text" 
+                       placeholder="e.g. 5" 
+                       className="w-24 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:ring-1 focus:ring-blue-500"
+                       value={estimateInput}
+                       onChange={e => setEstimateInput(e.target.value)}
+                     />
+                   </div>
+                   <button
+                     onClick={handleFinalizeEstimate}
+                     disabled={!estimateInput.trim()}
+                     className="px-3 py-1 bg-green-700 hover:bg-green-600 text-white text-sm font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                   >
+                     Save & Complete
+                   </button>
+                </div>
+              )}
+            </div>
+
           </div>
         )}
       </div>
@@ -160,35 +255,35 @@ const WorkItemListItem: React.FC<{
   isModerator: boolean;
   onSelect: (id: string) => void;
 }> = ({ item, isActive, isModerator, onSelect }) => {
+  const isCompleted = item.agreedEstimate !== null && item.agreedEstimate !== undefined;
+  
   return (
     <div 
       onClick={() => isModerator && !isActive ? onSelect(item.id) : null}
       className={`
-        p-3 rounded border transition-all relative group
+        p-2 rounded border transition-all relative group flex items-center justify-between
         ${isActive 
           ? 'bg-blue-900/20 border-blue-500/50 shadow-sm' 
-          : 'bg-gray-700/20 border-transparent hover:bg-gray-700/50 cursor-pointer'}
+          : isCompleted
+            ? 'bg-gray-800 border-gray-700 opacity-75 hover:opacity-100'
+            : 'bg-gray-700/20 border-transparent hover:bg-gray-700/50 cursor-pointer'}
         ${!isModerator && !isActive ? 'cursor-default' : ''}
       `}
     >
-      <div className="flex justify-between items-start mb-1">
-        <span className={`font-medium text-sm truncate w-full ${isActive ? 'text-blue-200' : 'text-gray-300'}`}>
+      <div className="min-w-0 flex-1 mr-2">
+         <div className={`font-medium text-xs truncate ${isActive ? 'text-blue-200' : isCompleted ? 'text-gray-400 line-through' : 'text-gray-300'}`}>
           {item.title}
-        </span>
+        </div>
       </div>
       
-      <div className="flex justify-between items-center mt-2">
-        {item.agreedEstimate ? (
-          <span className="text-[0.65rem] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded border border-green-800/50 font-mono">
-            {item.agreedEstimate} pts
+      <div className="flex-shrink-0">
+        {isCompleted ? (
+          <span className="text-[0.6rem] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded border border-green-800/50 font-mono font-bold">
+            {item.agreedEstimate}
           </span>
-        ) : (
-          <span className="text-[0.65rem] text-gray-600 italic">Pending</span>
-        )}
-        
-        {isActive && (
-          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-        )}
+        ) : isActive ? (
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse block"></span>
+        ) : null}
       </div>
     </div>
   );

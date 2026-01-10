@@ -115,6 +115,13 @@ async def handle_event(session_id: str, user_id: str, event: str, payload: dict)
             work_item_id = payload.get("workItemId")
             if work_item_id:
                 await manager.set_active_work_item(session_id, work_item_id)
+    
+    elif event == "set_agreed_estimate":
+        if is_moderator:
+            work_item_id = payload.get("workItemId")
+            estimate = payload.get("estimate")
+            if work_item_id is not None:
+                await manager.set_agreed_estimate(session_id, work_item_id, estimate)
         
     elif event == "join_session":
         pass
