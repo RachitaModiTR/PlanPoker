@@ -109,9 +109,10 @@ interface ParticipantItemProps {
 
 const ParticipantItem: React.FC<ParticipantItemProps> = ({ participant, isModerator, currentUserId, onKick }) => {
   const canKick = isModerator && participant.id !== currentUserId;
+  const isMe = participant.id === currentUserId;
 
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-700/50 rounded-lg border border-gray-600/50 group hover:bg-gray-700 transition-colors">
+    <div className={`flex items-center justify-between p-3 rounded-lg border group transition-colors ${isMe ? 'bg-blue-900/20 border-blue-800/50' : 'bg-gray-700/50 border-gray-600/50 hover:bg-gray-700'}`}>
       <div className="flex items-center gap-3">
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
           {participant.name.slice(0, 2)}
@@ -119,7 +120,7 @@ const ParticipantItem: React.FC<ParticipantItemProps> = ({ participant, isModera
         
         <div className="flex flex-col">
           <span className="text-sm font-medium text-gray-200 leading-tight">
-            {participant.name}
+            {participant.name} {isMe && <span className="text-gray-500 font-normal">(Me)</span>}
           </span>
           {participant.role === 'moderator' && (
             <span className="text-[0.6rem] text-purple-300 font-semibold uppercase tracking-wide">
