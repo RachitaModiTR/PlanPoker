@@ -1,4 +1,5 @@
 services:
+  # Backend
   - type: web
     name: plan-poker-backend
     env: python
@@ -9,10 +10,12 @@ services:
         value: 10000
     autoDeploy: true
 
-staticSites:
-  - name: plan-poker-frontend
+  # Frontend (Defined as a Web Service with static environment)
+  - type: web
+    name: plan-poker-frontend
+    env: static
     buildCommand: npm install && npm run build
-    publishPath: dist
+    staticPublishPath: dist
     envVars:
       - key: VITE_API_URL
         fromService:
