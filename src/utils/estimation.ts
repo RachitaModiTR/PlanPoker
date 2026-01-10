@@ -3,10 +3,19 @@ import { CONFIG } from '../constants';
 
 /**
  * Filter and extract valid numeric votes.
+ * robustly converts numeric strings ("5") to numbers (5).
  */
 export const getNumericVotes = (votes: VoteValue[]): number[] => {
   return votes
-    .filter((v): v is number => typeof v === 'number')
+    .map(v => {
+      if (typeof v === 'number') return v;
+      if (typeof v === 'string') {
+        const parsed = parseFloat(v);
+        return isNaN(parsed) ? null : parsed;
+      }
+      return null;
+    })
+    .filter((v): v is number => v !== null)
     .sort((a, b) => a - b);
 };
 
@@ -89,4 +98,3 @@ export const detectOutliers = (votes: VoteValue[]): Outliers => {
 
   return { min, max, hasOutliers: true };
 };
-
