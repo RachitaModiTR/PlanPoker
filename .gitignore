@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+node_modules
+backend/venv/
+backend/venv
+venv/
+venv
+backend/__pycache__/
+__pycache__/
+*.pyc
+
+# Build outputs
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# IDE settings
+.vscode/
+.idea/
+.DS_Store
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
