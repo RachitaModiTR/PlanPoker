@@ -11,15 +11,18 @@ services:
     autoDeploy: true
 
   # Frontend Static Site
-  - type: static
-    name: plan-poker-frontend
-    env: node
+  # Changing to type: web if 'static' is failing, but let's try strict 'static_site' if available or fallback.
+  # Actually, Render Blueprints usually use 'type: web' for dynamic and 'type: static_site' is not a valid service type key in the YAML list directly sometimes?
+  # No, 'type: pserv', 'type: web', 'type: worker', 'type: cron'.
+  # For Static Sites, we use a separate top-level key 'staticSites' in render.yaml!
+
+staticSites:
+  - name: plan-poker-frontend
     buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
+    publishDir: dist
     envVars:
       - key: VITE_API_URL
         fromService:
           type: web
           name: plan-poker-backend
           property: host
-
