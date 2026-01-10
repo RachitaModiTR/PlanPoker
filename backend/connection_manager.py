@@ -121,8 +121,7 @@ class ConnectionManager:
                 **user.model_dump(),
                 role=role,
                 status=ParticipantStatus.CONNECTED,
-                hasVoted=False,
-                jobRole=user.jobRole or JobRole.DEVELOPER
+                hasVoted=False
             )
             session.participants.append(new_participant)
 
