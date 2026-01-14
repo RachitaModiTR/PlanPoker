@@ -10,6 +10,7 @@ import { useSessionStore } from '../store/sessionStore';
 import { useSocket } from '../hooks/useSocket';
 import { VoteValue, JobRole } from '../types/domain';
 import { STORAGE_KEY } from '../constants';
+import { playRevealSound } from '../utils/sound';
 
 // Hardcoded for demo purposes; normally from URL params
 const DEMO_SESSION_ID = 'demo-123';
@@ -57,6 +58,11 @@ export const SessionPage: React.FC = () => {
   useEffect(() => {
     if (session?.phase === 'voting' && !session.participants.find(p => p.id === currentUser?.id)?.hasVoted) {
       setSelectedCard(null);
+    }
+    
+    // Play sound on reveal
+    if (session?.phase === 'revealing') {
+      playRevealSound();
     }
   }, [session?.phase, session?.participants, currentUser?.id]);
 
