@@ -11,6 +11,8 @@ class ParticipantRole(str, Enum):
     OBSERVER = "observer"
 
 class JobRole(str, Enum):
+    ADMIN = "Admin"
+    PRODUCT = "Product"
     DEVELOPER = "Developer"
     QA = "QA"
 

@@ -50,6 +50,8 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
                 onChange={(e) => setJobRole(e.target.value as JobRole)}
                 className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
               >
+                <option value="Admin">Admin</option>
+                <option value="Product">Product</option>
                 <option value="Developer">Developer</option>
                 <option value="QA">QA</option>
               </select>

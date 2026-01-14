@@ -20,6 +20,7 @@ interface SessionState {
   castVote: (value: VoteValue) => void;
   revealVotes: () => void; // Admin/Moderator action
   clearVotes: () => void; // Admin/Moderator action
+  resetSession: () => void;
   updateSessionSnapshot: (snapshot: SessionSnapshot) => void;
   setConnected: (connected: boolean) => void;
 }
@@ -99,6 +100,10 @@ export const useSessionStore = create<SessionState>()(
             participants: session.participants.map(p => ({ ...p, hasVoted: false }))
           }
         });
+      },
+
+      resetSession: () => {
+        set({ session: null, currentUser: null, isConnected: false });
       },
 
       updateSessionSnapshot: (snapshot: SessionSnapshot) => {

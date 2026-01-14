@@ -96,6 +96,10 @@ async def handle_event(session_id: str, user_id: str, event: str, payload: dict)
             for p in session.participants:
                 p.hasVoted = False
             await manager.broadcast_snapshot(session_id)
+            
+    elif event == "reset_session":
+        if is_moderator:
+            await manager.reset_session(session_id)
     
     elif event == "kick_participant":
         if is_moderator:

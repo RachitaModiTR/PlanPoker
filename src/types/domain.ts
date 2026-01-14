@@ -13,7 +13,7 @@ export type ParticipantRole = 'moderator' | 'voter' | 'observer';
 /**
  * Job Role of the participant (Developer or QA).
  */
-export type JobRole = 'Developer' | 'QA';
+export type JobRole = 'Admin' | 'Product' | 'Developer' | 'QA';
 
 /**
  * Status of a participant's connection or activity.

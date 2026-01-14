@@ -9,10 +9,10 @@ import { JoinScreen } from '../components/JoinScreen';
 import { useSessionStore } from '../store/sessionStore';
 import { useSocket } from '../hooks/useSocket';
 import { VoteValue, JobRole } from '../types/domain';
+import { STORAGE_KEY } from '../constants';
 
 // Hardcoded for demo purposes; normally from URL params
 const DEMO_SESSION_ID = 'demo-123';
-const STORAGE_KEY = 'planpoker_user';
 
 export const SessionPage: React.FC = () => {
   const { session, currentUser, joinSession, castVote } = useSessionStore();
@@ -21,7 +21,7 @@ export const SessionPage: React.FC = () => {
 
   // Check for persisted user on mount
   useEffect(() => {
-    const stored = sessionStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       const user = JSON.parse(stored);
       joinSession(user, DEMO_SESSION_ID);
@@ -38,7 +38,7 @@ export const SessionPage: React.FC = () => {
       jobRole: jobRole
     };
     
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
     joinSession(newUser, DEMO_SESSION_ID);
     setIsJoinScreenVisible(false);
   };
@@ -89,7 +89,7 @@ export const SessionPage: React.FC = () => {
         
         <SessionControls />
 
-        {isVoting && (
+        {isVoting && myRole !== 'observer' && (
           <div className="animate-in fade-in duration-500">
             <PokerBoard 
               selectedValue={selectedCard} 

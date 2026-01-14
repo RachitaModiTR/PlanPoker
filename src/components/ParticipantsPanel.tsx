@@ -22,6 +22,14 @@ export const ParticipantsPanel: React.FC = () => {
   }
 
   // Filter and sort by group
+  const admins = participants
+    .filter(p => p.jobRole === 'Admin')
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  const product = participants
+    .filter(p => p.jobRole === 'Product')
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   const developers = participants
     .filter(p => p.jobRole === 'Developer')
     .sort((a, b) => a.name.localeCompare(b.name));
@@ -31,11 +39,27 @@ export const ParticipantsPanel: React.FC = () => {
     .sort((a, b) => a.name.localeCompare(b.name));
 
   const others = participants
-    .filter(p => p.jobRole !== 'Developer' && p.jobRole !== 'QA')
+    .filter(p => p.jobRole !== 'Developer' && p.jobRole !== 'QA' && p.jobRole !== 'Admin' && p.jobRole !== 'Product')
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (
     <div className="space-y-6">
+      <ParticipantGroup 
+        title="Admins" 
+        participants={admins} 
+        isModerator={isModerator} 
+        currentUserId={currentUser?.id} 
+        onKick={handleKick} 
+      />
+
+      <ParticipantGroup 
+        title="Product" 
+        participants={product} 
+        isModerator={isModerator} 
+        currentUserId={currentUser?.id} 
+        onKick={handleKick} 
+      />
+
       <ParticipantGroup 
         title="Developers" 
         participants={developers} 

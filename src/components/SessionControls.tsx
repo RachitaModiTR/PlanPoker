@@ -22,6 +22,12 @@ export const SessionControls: React.FC = () => {
     socketService.send('clear_votes', {});
   };
 
+  const handleResetSession = () => {
+    if (window.confirm('Are you sure you want to reset the entire session? This will clear all votes and estimates.')) {
+      socketService.send('reset_session', {});
+    }
+  };
+
   const isVoting = session.phase === 'voting';
   const isRevealed = session.phase === 'revealing' || session.phase === 'results';
   
@@ -68,6 +74,14 @@ export const SessionControls: React.FC = () => {
              Reset Round
            </button>
         )}
+        
+        <button
+          onClick={handleResetSession}
+          className="px-4 py-2 border border-red-800 text-red-500 hover:bg-red-900/20 hover:text-red-400 rounded font-medium transition-colors text-sm ml-2"
+          title="Clears all estimates and votes"
+        >
+          Reset Session
+        </button>
       </div>
     </div>
   );

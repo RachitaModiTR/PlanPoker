@@ -40,3 +40,5 @@ export const VOTE = {
   COFFEE: 'coffee',
 } as const;
 
+export const STORAGE_KEY = 'planpoker_user';
+

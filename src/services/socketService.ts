@@ -2,6 +2,7 @@
 import { User } from '../types/domain';
 import { useSessionStore } from '../store/sessionStore';
 import { SessionSnapshot } from '../types/domain';
+import { STORAGE_KEY } from '../constants';
 
 // Determine WebSocket URL from environment or fallback to localhost
 const getWebSocketUrl = () => {
@@ -22,7 +23,7 @@ const getWebSocketUrl = () => {
   }
   
   // Default fallback for local dev if not specified
-  return 'ws://192.168.1.16:8000/ws';
+  return 'ws://localhost:8000/ws';
 };
 
 const WS_BASE_URL = getWebSocketUrl();
@@ -62,6 +63,15 @@ class SocketService {
     this.socket.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        
+        // Handle session reset event
+        if (data.event === 'session_reset') {
+          console.log('[SocketService] Session reset by server');
+          localStorage.removeItem(STORAGE_KEY);
+          useSessionStore.getState().resetSession();
+          return;
+        }
+
         // Assuming the backend sends the raw SessionSnapshot object
         this.handleSnapshot(data);
       } catch (e) {

@@ -104,6 +104,34 @@ class ConnectionManager:
             item.agreedEstimate = estimate
             await self.broadcast_snapshot(session_id)
 
+    async def reset_session(self, session_id: str):
+        # Notify all clients to kill their local session
+        message = '{"event": "session_reset"}'
+        
+        connections = self.active_connections.get(session_id, [])
+        for connection in connections:
+            try:
+                await connection.send_text(message)
+            except Exception:
+                pass
+                
+        # Wait for messages to be sent before closing
+        await asyncio.sleep(0.1)
+
+        # Close all connections
+        for connection in list(connections):
+             try:
+                 await connection.close()
+             except Exception:
+                 pass
+        
+        # Clear data
+        if session_id in self.sessions:
+            del self.sessions[session_id]
+            
+        if session_id in self.active_connections:
+            del self.active_connections[session_id]
+
     async def broadcast_snapshot(self, session_id: str):
         session = self.sessions.get(session_id)
         if not session:
@@ -165,7 +193,14 @@ class ConnectionManager:
             existing.jobRole = user.jobRole or JobRole.DEVELOPER # Update role if changed
         else:
             # First participant becomes Moderator
-            role = ParticipantRole.MODERATOR if len(session.participants) == 0 else ParticipantRole.VOTER
+            if len(session.participants) == 0:
+                role = ParticipantRole.MODERATOR
+            else:
+                # Admins are observers, others are voters
+                if user.jobRole == JobRole.ADMIN:
+                    role = ParticipantRole.OBSERVER
+                else:
+                    role = ParticipantRole.VOTER
             
             new_participant = Participant(
                 **user.model_dump(),
