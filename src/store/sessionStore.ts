@@ -13,6 +13,7 @@ interface SessionState {
   currentUser: User | null;
   session: Session | null;
   isConnected: boolean;
+  themeMode: 'light' | 'dark'; // Add theme mode
   
   // Actions
   joinSession: (user: User, sessionId: string) => void;
@@ -23,6 +24,7 @@ interface SessionState {
   resetSession: () => void;
   updateSessionSnapshot: (snapshot: SessionSnapshot) => void;
   setConnected: (connected: boolean) => void;
+  toggleTheme: () => void; // Action to toggle theme
 }
 
 export const useSessionStore = create<SessionState>()(
@@ -31,6 +33,7 @@ export const useSessionStore = create<SessionState>()(
       currentUser: null,
       session: null,
       isConnected: false,
+      themeMode: (localStorage.getItem('themeMode') as 'light' | 'dark') || 'light',
 
       joinSession: (user, _sessionId) => {
         // In a real app, this would trigger a WebSocket connection or API call
@@ -116,6 +119,13 @@ export const useSessionStore = create<SessionState>()(
 
       setConnected: (connected: boolean) => {
         set({ isConnected: connected });
+      },
+
+      toggleTheme: () => {
+        const { themeMode } = get();
+        const newMode = themeMode === 'light' ? 'dark' : 'light';
+        localStorage.setItem('themeMode', newMode);
+        set({ themeMode: newMode });
       }
     }),
     { name: 'SessionStore' }

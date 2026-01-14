@@ -3,8 +3,54 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    /* Pastel Light Theme (Default) */
+    --color-bg: #f8fafc;        /* Slate 50 */
+    --color-surface: #ffffff;   /* White */
+    --color-text: #334155;      /* Slate 700 */
+    --color-muted: #94a3b8;     /* Slate 400 */
+    --color-border: #e2e8f0;    /* Slate 200 */
+
+    /* Accents */
+    --color-blue-bg: #bfdbfe;   /* Blue 200 */
+    --color-blue-hover: #93c5fd; /* Blue 300 */
+    --color-blue-text: #1e40af; /* Blue 800 */
+
+    --color-green-bg: #bbf7d0;  /* Green 200 */
+    --color-green-text: #166534; /* Green 800 */
+
+    --color-red-bg: #fecaca;    /* Red 200 */
+    --color-red-text: #991b1b;  /* Red 800 */
+
+    --color-purple-bg: #e9d5ff; /* Purple 200 */
+    --color-purple-text: #6b21a8; /* Purple 800 */
+  }
+
+  .dark {
+    /* Dark Theme Override */
+    --color-bg: #111827;        /* Gray 900 */
+    --color-surface: #1f2937;   /* Gray 800 */
+    --color-text: #f3f4f6;      /* Gray 100 */
+    --color-muted: #9ca3af;     /* Gray 400 */
+    --color-border: #374151;    /* Gray 700 */
+
+    /* Accents - Darker / Desaturated for dark mode */
+    --color-blue-bg: #1e3a8a;   /* Blue 900 */
+    --color-blue-hover: #1e40af; /* Blue 800 */
+    --color-blue-text: #bfdbfe; /* Blue 200 */
+
+    --color-green-bg: #14532d;  /* Green 900 */
+    --color-green-text: #bbf7d0; /* Green 200 */
+
+    --color-red-bg: #7f1d1d;    /* Red 900 */
+    --color-red-text: #fecaca;  /* Red 200 */
+
+    --color-purple-bg: #581c87; /* Purple 900 */
+    --color-purple-text: #e9d5ff; /* Purple 200 */
+  }
+
   body {
-    @apply bg-gray-900 text-gray-100 antialiased;
+    @apply bg-pastel-bg text-pastel-text antialiased;
   }
 }
 

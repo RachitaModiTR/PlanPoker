@@ -25,13 +25,13 @@ export const PokerCard: React.FC<PokerCardProps> = ({
   
   // Interactive states (only when not disabled)
   const interactiveClasses = !disabled 
-    ? "cursor-pointer hover:-translate-y-1 hover:shadow-md hover:border-blue-400 active:translate-y-0 active:shadow-sm" 
+    ? "cursor-pointer hover:-translate-y-1 hover:shadow-md hover:border-pastel-blue-hover active:translate-y-0 active:shadow-sm" 
     : "cursor-not-allowed opacity-50";
 
   // Selected state
   const selectedClasses = selected 
-    ? "bg-blue-600 border-blue-500 text-white shadow-blue-900/50 shadow-lg -translate-y-2" 
-    : "bg-gray-800 border-gray-600 text-gray-200";
+    ? "bg-pastel-blue border-pastel-blue-text text-pastel-blue-text shadow-lg -translate-y-2 ring-2 ring-pastel-blue ring-offset-1 ring-offset-pastel-bg" 
+    : "bg-pastel-surface border-pastel-border text-pastel-text";
 
   return (
     <div 

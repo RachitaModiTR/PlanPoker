@@ -36,8 +36,8 @@ export const SessionControls: React.FC = () => {
   const hasVotes = session.participants.some(p => p.hasVoted);
 
   return (
-    <div className="flex flex-wrap gap-4 p-4 bg-gray-800 rounded-lg border border-gray-700 items-center justify-between shadow-sm">
-      <div className="text-sm font-medium text-gray-400 uppercase tracking-wider">
+    <div className="flex flex-wrap gap-4 p-4 bg-pastel-surface rounded-lg border border-pastel-border items-center justify-between shadow-sm">
+      <div className="text-sm font-medium text-pastel-muted uppercase tracking-wider">
         Moderator Controls
       </div>
       
@@ -48,8 +48,8 @@ export const SessionControls: React.FC = () => {
             disabled={!hasVotes}
             className={`px-4 py-2 rounded font-semibold text-white transition-colors
               ${hasVotes 
-                ? 'bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-900/30' 
-                : 'bg-gray-700 text-gray-400 cursor-not-allowed'}
+                ? 'bg-indigo-500 hover:bg-indigo-600 shadow-md shadow-indigo-200' 
+                : 'bg-slate-300 text-slate-100 cursor-not-allowed'}
             `}
           >
             Reveal Votes
@@ -59,7 +59,7 @@ export const SessionControls: React.FC = () => {
         {(isRevealed) && (
           <button
             onClick={handleClear}
-            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-200 rounded font-semibold transition-colors border border-gray-600"
+            className="px-4 py-2 bg-pastel-surface hover:bg-pastel-bg text-pastel-text rounded font-semibold transition-colors border border-pastel-border shadow-sm"
           >
             Start New Round
           </button>
@@ -69,7 +69,7 @@ export const SessionControls: React.FC = () => {
         {isVoting && hasVotes && (
            <button
              onClick={handleClear}
-             className="px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded font-medium transition-colors text-sm"
+             className="px-4 py-2 text-red-500 hover:text-red-600 hover:bg-red-50 rounded font-medium transition-colors text-sm"
            >
              Reset Round
            </button>
@@ -77,7 +77,7 @@ export const SessionControls: React.FC = () => {
         
         <button
           onClick={handleResetSession}
-          className="px-4 py-2 border border-red-800 text-red-500 hover:bg-red-900/20 hover:text-red-400 rounded font-medium transition-colors text-sm ml-2"
+          className="px-4 py-2 border border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 rounded font-medium transition-colors text-sm ml-2"
           title="Clears all estimates and votes"
         >
           Reset Session

@@ -18,7 +18,7 @@ export const ParticipantsPanel: React.FC = () => {
   };
 
   if (!session) {
-    return <div className="text-gray-500 italic text-sm p-4">Waiting for session...</div>;
+    return <div className="text-pastel-muted italic text-sm p-4">Waiting for session...</div>;
   }
 
   // Filter and sort by group
@@ -87,7 +87,7 @@ export const ParticipantsPanel: React.FC = () => {
       )}
 
       {participants.length === 0 && (
-        <p className="text-gray-500 italic text-sm">No participants yet.</p>
+        <p className="text-pastel-muted italic text-sm">No participants yet.</p>
       )}
     </div>
   );
@@ -106,7 +106,7 @@ const ParticipantGroup: React.FC<ParticipantGroupProps> = ({ title, participants
 
   return (
     <div>
-      <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 px-1">
+      <h3 className="text-xs font-bold text-pastel-muted uppercase tracking-wider mb-2 px-1">
         {title} ({participants.length})
       </h3>
       <div className="space-y-2">
@@ -136,18 +136,18 @@ const ParticipantItem: React.FC<ParticipantItemProps> = ({ participant, isModera
   const isMe = participant.id === currentUserId;
 
   return (
-    <div className={`flex items-center justify-between p-3 rounded-lg border group transition-colors ${isMe ? 'bg-blue-900/20 border-blue-800/50' : 'bg-gray-700/50 border-gray-600/50 hover:bg-gray-700'}`}>
+    <div className={`flex items-center justify-between p-3 rounded-lg border group transition-colors ${isMe ? 'bg-pastel-blue/30 border-pastel-blue' : 'bg-pastel-surface border-pastel-border hover:bg-pastel-bg'}`}>
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-300 to-purple-300 flex items-center justify-center text-xs font-bold text-white uppercase shadow-sm">
           {participant.name.slice(0, 2)}
         </div>
         
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-gray-200 leading-tight">
-            {participant.name} {isMe && <span className="text-gray-500 font-normal">(Me)</span>}
+          <span className="text-sm font-medium text-pastel-text leading-tight">
+            {participant.name} {isMe && <span className="text-pastel-muted font-normal">(Me)</span>}
           </span>
           {participant.role === 'moderator' && (
-            <span className="text-[0.6rem] text-purple-300 font-semibold uppercase tracking-wide">
+            <span className="text-[0.6rem] text-purple-600 font-semibold uppercase tracking-wide">
               Moderator
             </span>
           )}
@@ -156,20 +156,20 @@ const ParticipantItem: React.FC<ParticipantItemProps> = ({ participant, isModera
 
       <div className="flex items-center gap-2">
         {participant.hasVoted ? (
-          <div className="flex items-center gap-1.5 px-2 py-1 bg-green-900/40 text-green-400 rounded text-xs font-medium border border-green-800/50">
+          <div className="flex items-center gap-1.5 px-2 py-1 bg-pastel-green text-green-800 rounded text-xs font-medium border border-green-200">
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
             <span>Voted</span>
           </div>
         ) : (
-          <span className="px-2 py-1 text-xs text-gray-500 italic">Thinking...</span>
+          <span className="px-2 py-1 text-xs text-pastel-muted italic">Thinking...</span>
         )}
 
         {canKick && (
           <button
             onClick={() => onKick(participant.id)}
-            className="p-1 text-gray-500 hover:text-red-400 hover:bg-red-900/20 rounded opacity-0 group-hover:opacity-100 transition-all"
+            className="p-1 text-pastel-muted hover:text-red-500 hover:bg-red-50 rounded opacity-0 group-hover:opacity-100 transition-all"
             title="Kick Participant"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

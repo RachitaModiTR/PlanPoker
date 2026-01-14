@@ -17,14 +17,14 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 px-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-700">
-        <h1 className="text-3xl font-bold text-center text-blue-500 mb-2">PlanPoker</h1>
-        <p className="text-center text-gray-400 mb-8">Join the session to start estimating.</p>
+    <div className="flex items-center justify-center min-h-screen bg-pastel-bg px-4">
+      <div className="w-full max-w-md bg-pastel-surface rounded-xl shadow-lg p-8 border border-pastel-border">
+        <h1 className="text-3xl font-bold text-center text-indigo-500 mb-2">PlanPoker</h1>
+        <p className="text-center text-pastel-muted mb-8">Join the session to start estimating.</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="username" className="block text-sm font-medium text-pastel-text mb-2">
               Your Name
             </label>
             <input
@@ -32,7 +32,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
               id="username"
               required
               autoFocus
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className="w-full px-4 py-3 bg-pastel-surface border border-pastel-border rounded-lg text-pastel-text placeholder-pastel-muted focus:outline-none focus:ring-2 focus:ring-pastel-blue-hover focus:border-transparent transition-all shadow-sm"
               placeholder="e.g. John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -40,7 +40,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
           </div>
 
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-300 mb-2">
+            <label htmlFor="role" className="block text-sm font-medium text-pastel-text mb-2">
               Your Role
             </label>
             <div className="relative">
@@ -48,14 +48,14 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
                 id="role"
                 value={jobRole}
                 onChange={(e) => setJobRole(e.target.value as JobRole)}
-                className="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent cursor-pointer"
+                className="w-full px-4 py-3 bg-pastel-surface border border-pastel-border rounded-lg text-pastel-text appearance-none focus:outline-none focus:ring-2 focus:ring-pastel-blue-hover focus:border-transparent cursor-pointer shadow-sm"
               >
                 <option value="Admin">Admin</option>
                 <option value="Product">Product</option>
                 <option value="Developer">Developer</option>
                 <option value="QA">QA</option>
               </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-gray-400">
+              <div className="absolute inset-y-0 right-0 flex items-center px-4 pointer-events-none text-pastel-muted">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -66,7 +66,7 @@ export const JoinScreen: React.FC<JoinScreenProps> = ({ onJoin }) => {
           <button
             type="submit"
             disabled={!name.trim()}
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-3 px-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Join Session
           </button>

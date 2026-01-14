@@ -64,15 +64,15 @@ export const WorkItemPanel: React.FC = () => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
       {/* Sidebar with Tabs/Sections */}
-      <div className="lg:col-span-1 bg-gray-800 rounded-lg border border-gray-700 flex flex-col max-h-[500px]">
+      <div className="lg:col-span-1 bg-pastel-surface rounded-lg border border-pastel-border flex flex-col max-h-[500px] shadow-sm">
         
         {/* Header & Add Button */}
-        <div className="p-3 border-b border-gray-700 flex justify-between items-center bg-gray-900/50 rounded-t-lg">
-          <h3 className="font-semibold text-gray-300 text-sm uppercase tracking-wide">Work Items</h3>
+        <div className="p-3 border-b border-pastel-border flex justify-between items-center bg-pastel-bg rounded-t-lg">
+          <h3 className="font-semibold text-pastel-text text-sm uppercase tracking-wide">Work Items</h3>
           {isModerator && (
             <button 
               onClick={() => setIsAdding(!isAdding)}
-              className="text-blue-400 hover:text-blue-300 text-sm font-bold p-1"
+              className="text-indigo-500 hover:text-indigo-600 text-sm font-bold p-1"
             >
               {isAdding ? 'Cancel' : '+ Add'}
             </button>
@@ -80,25 +80,25 @@ export const WorkItemPanel: React.FC = () => {
         </div>
         
         {isAdding && (
-          <form onSubmit={handleAddItem} className="p-3 bg-gray-700/30 border-b border-gray-700 space-y-2">
+          <form onSubmit={handleAddItem} className="p-3 bg-pastel-surface border-b border-pastel-border space-y-2">
             <input
               type="text"
               placeholder="Task Title..."
-              className="w-full px-2 py-1 bg-gray-900 border border-gray-600 rounded text-sm text-white focus:ring-1 focus:ring-blue-500"
+              className="w-full px-2 py-1 bg-pastel-surface border border-pastel-border rounded text-sm text-pastel-text focus:ring-1 focus:ring-indigo-500"
               value={newTitle}
               onChange={e => setNewTitle(e.target.value)}
               autoFocus
             />
             <textarea
               placeholder="Description (opt)..."
-              className="w-full px-2 py-1 bg-gray-900 border border-gray-600 rounded text-sm text-white focus:ring-1 focus:ring-blue-500 h-16 resize-none"
+              className="w-full px-2 py-1 bg-pastel-surface border border-pastel-border rounded text-sm text-pastel-text focus:ring-1 focus:ring-indigo-500 h-16 resize-none"
               value={newDesc}
               onChange={e => setNewDesc(e.target.value)}
             />
             <button 
               type="submit"
               disabled={!newTitle.trim()}
-              className="w-full py-1 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded disabled:opacity-50"
+              className="w-full py-1 bg-indigo-500 hover:bg-indigo-600 text-white text-xs font-bold rounded disabled:opacity-50"
             >
               Add Item
             </button>
@@ -109,10 +109,10 @@ export const WorkItemPanel: React.FC = () => {
           
           {/* Pending List */}
           <div>
-            <div className="px-1 mb-1 text-xs font-bold text-gray-500 uppercase">Pending ({pendingItems.length})</div>
+            <div className="px-1 mb-1 text-xs font-bold text-pastel-muted uppercase">Pending ({pendingItems.length})</div>
             <div className="space-y-1">
               {pendingItems.length === 0 ? (
-                <p className="text-gray-600 text-[10px] italic px-2">No pending items.</p>
+                <p className="text-pastel-muted text-[10px] italic px-2">No pending items.</p>
               ) : (
                 pendingItems.map(item => (
                   <WorkItemListItem 
@@ -129,10 +129,10 @@ export const WorkItemPanel: React.FC = () => {
 
           {/* Completed List */}
           <div>
-            <div className="px-1 mb-1 text-xs font-bold text-gray-500 uppercase">Completed ({completedItems.length})</div>
+            <div className="px-1 mb-1 text-xs font-bold text-pastel-muted uppercase">Completed ({completedItems.length})</div>
             <div className="space-y-1">
               {completedItems.length === 0 ? (
-                <p className="text-gray-600 text-[10px] italic px-2">No completed items.</p>
+                <p className="text-pastel-muted text-[10px] italic px-2">No completed items.</p>
               ) : (
                 completedItems.map(item => (
                   <WorkItemListItem 
@@ -151,29 +151,29 @@ export const WorkItemPanel: React.FC = () => {
       </div>
 
       {/* Active Item Detail */}
-      <div className="lg:col-span-3 bg-gray-800 rounded-lg p-6 border border-gray-700 shadow-sm min-h-[200px] flex flex-col justify-center">
+      <div className="lg:col-span-3 bg-pastel-surface rounded-lg p-6 border border-pastel-border shadow-sm min-h-[200px] flex flex-col justify-center">
         {!activeWorkItem ? (
-          <div className="text-center text-gray-500">
+          <div className="text-center text-pastel-muted">
             <p className="mb-2">No active work item selected.</p>
             {isModerator && <p className="text-sm">Select or add an item from the sidebar.</p>}
           </div>
         ) : (
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <span className="bg-blue-900/50 text-blue-300 text-xs px-2 py-1 rounded border border-blue-800 uppercase font-bold tracking-wider">
+              <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded border border-indigo-200 uppercase font-bold tracking-wider">
                 Active
               </span>
-              <h2 className="text-2xl font-bold text-gray-100 leading-tight">
+              <h2 className="text-2xl font-bold text-pastel-text leading-tight">
                 {activeWorkItem.title}
               </h2>
             </div>
             
             {activeWorkItem.description ? (
-              <p className="text-gray-300 text-base leading-relaxed bg-gray-900/30 p-4 rounded border border-gray-700/50">
+              <p className="text-pastel-text text-base leading-relaxed bg-pastel-bg p-4 rounded border border-pastel-border">
                 {activeWorkItem.description}
               </p>
             ) : (
-              <p className="text-gray-500 italic">No description provided.</p>
+              <p className="text-pastel-muted italic">No description provided.</p>
             )}
 
             {activeWorkItem.linkUrl && (
@@ -181,7 +181,7 @@ export const WorkItemPanel: React.FC = () => {
                 href={activeWorkItem.linkUrl}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 mt-4 text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium"
+                className="inline-flex items-center gap-1 mt-4 text-indigo-500 hover:text-indigo-600 transition-colors text-sm font-medium"
               >
                 <span>View External Link</span>
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -191,12 +191,12 @@ export const WorkItemPanel: React.FC = () => {
             )}
 
             {/* Agreed Estimate Display or Input */}
-            <div className="mt-6 pt-4 border-t border-gray-700">
+            <div className="mt-6 pt-4 border-t border-pastel-border">
               {activeWorkItem.agreedEstimate !== null && activeWorkItem.agreedEstimate !== undefined ? (
                  <div className="flex items-center gap-4">
                    <div className="flex items-center gap-2">
-                     <span className="text-sm text-gray-400 uppercase tracking-wide font-semibold">Final Estimate:</span>
-                     <span className="px-3 py-1 bg-green-900/40 text-green-300 rounded border border-green-800 font-bold text-lg">
+                     <span className="text-sm text-pastel-muted uppercase tracking-wide font-semibold">Final Estimate:</span>
+                     <span className="px-3 py-1 bg-green-100 text-green-800 rounded border border-green-200 font-bold text-lg">
                        {activeWorkItem.agreedEstimate}
                      </span>
                    </div>
@@ -205,28 +205,28 @@ export const WorkItemPanel: React.FC = () => {
                        onClick={() => {
                          // Reset estimate logic if needed, currently overwrite via input below
                        }}
-                       className="text-gray-500 hover:text-gray-300 text-xs underline"
+                       className="text-pastel-muted hover:text-pastel-text text-xs underline"
                      >
                        Edit
                      </button>
                    )}
                  </div>
               ) : (
-                <div className="flex items-center gap-2 text-yellow-500/80 text-sm font-medium">
-                   <span className="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+                <div className="flex items-center gap-2 text-yellow-600 text-sm font-medium">
+                   <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse"></span>
                    Voting in progress...
                 </div>
               )}
 
               {/* Moderator Finalize Controls */}
               {isModerator && (
-                <div className="mt-4 flex items-end gap-2 bg-gray-900/30 p-3 rounded border border-gray-700/50 w-full md:w-auto inline-flex">
+                <div className="mt-4 flex items-end gap-2 bg-pastel-bg p-3 rounded border border-pastel-border w-full md:w-auto inline-flex">
                    <div>
-                     <label className="block text-xs text-gray-500 uppercase font-bold mb-1">Set Final Estimate</label>
+                     <label className="block text-xs text-pastel-muted uppercase font-bold mb-1">Set Final Estimate</label>
                      <input 
                        type="text" 
                        placeholder="e.g. 5" 
-                       className="w-24 px-2 py-1 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:ring-1 focus:ring-blue-500"
+                       className="w-24 px-2 py-1 bg-pastel-surface border border-pastel-border rounded text-pastel-text text-sm focus:ring-1 focus:ring-indigo-500"
                        value={estimateInput}
                        onChange={e => setEstimateInput(e.target.value)}
                      />
@@ -234,7 +234,7 @@ export const WorkItemPanel: React.FC = () => {
                    <button
                      onClick={handleFinalizeEstimate}
                      disabled={!estimateInput.trim()}
-                     className="px-3 py-1 bg-green-700 hover:bg-green-600 text-white text-sm font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                     className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-bold rounded disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                    >
                      Save & Complete
                    </button>
@@ -263,26 +263,26 @@ const WorkItemListItem: React.FC<{
       className={`
         p-2 rounded border transition-all relative group flex items-center justify-between
         ${isActive 
-          ? 'bg-blue-900/20 border-blue-500/50 shadow-sm' 
+          ? 'bg-indigo-50 border-indigo-200 shadow-sm' 
           : isCompleted
-            ? 'bg-gray-800 border-gray-700 opacity-75 hover:opacity-100'
-            : 'bg-gray-700/20 border-transparent hover:bg-gray-700/50 cursor-pointer'}
+            ? 'bg-pastel-bg border-pastel-border opacity-75 hover:opacity-100'
+            : 'bg-pastel-surface border-transparent hover:bg-pastel-bg cursor-pointer'}
         ${!isModerator && !isActive ? 'cursor-default' : ''}
       `}
     >
       <div className="min-w-0 flex-1 mr-2">
-         <div className={`font-medium text-xs truncate ${isActive ? 'text-blue-200' : isCompleted ? 'text-gray-400 line-through' : 'text-gray-300'}`}>
+         <div className={`font-medium text-xs truncate ${isActive ? 'text-indigo-700' : isCompleted ? 'text-pastel-muted line-through' : 'text-pastel-text'}`}>
           {item.title}
         </div>
       </div>
       
       <div className="flex-shrink-0">
         {isCompleted ? (
-          <span className="text-[0.6rem] bg-green-900/30 text-green-400 px-1.5 py-0.5 rounded border border-green-800/50 font-mono font-bold">
+          <span className="text-[0.6rem] bg-green-100 text-green-700 px-1.5 py-0.5 rounded border border-green-200 font-mono font-bold">
             {item.agreedEstimate}
           </span>
         ) : isActive ? (
-          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse block"></span>
+          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse block"></span>
         ) : null}
       </div>
     </div>
